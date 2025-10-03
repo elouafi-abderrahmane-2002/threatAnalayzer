@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* SOC Dark Theme - Professional Cybersecurity Palette */
+    --background: 225 14% 7%;
+    --foreground: 210 40% 98%;
+
+    --card: 225 14% 9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 225 14% 9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 214 100% 60%;
+    --primary-foreground: 225 14% 7%;
+
+    --secondary: 225 14% 12%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 225 14% 12%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 190 100% 50%;
+    --accent-foreground: 225 14% 7%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --success: 142 76% 36%;
+    --success-foreground: 210 40% 98%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 225 14% 7%;
+
+    --border: 225 14% 15%;
+    --input: 225 14% 15%;
+    --ring: 214 100% 60%;
+
+    --radius: 0.75rem;
+
+    /* SOC Specific Colors */
+    --soc-primary: 214 100% 60%;
+    --soc-accent: 190 100% 50%;
+    --soc-danger: 0 84% 60%;
+    --soc-success: 142 76% 36%;
+    --soc-warning: 38 92% 50%;
+    --soc-surface: 225 14% 9%;
+    --soc-surface-hover: 225 14% 12%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(214 100% 60%), hsl(190 100% 50%));
+    --gradient-surface: linear-gradient(180deg, hsl(225 14% 9%), hsl(225 14% 7%));
+    --gradient-glow: radial-gradient(circle at center, hsl(214 100% 60% / 0.2), transparent 70%);
+
+    /* Shadows */
+    --shadow-glow: 0 0 40px hsl(214 100% 60% / 0.3);
+    --shadow-elevated: 0 10px 30px -10px hsl(225 14% 3% / 0.5);
+
+    --sidebar-background: 225 14% 9%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 214 100% 60%;
+    --sidebar-primary-foreground: 225 14% 7%;
+    --sidebar-accent: 225 14% 12%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 225 14% 15%;
+    --sidebar-ring: 214 100% 60%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}

@@ -1,0 +1,10 @@
+project_id = "jinzgjgbghalnkzevhjj"
+
+[functions.ai-chat]
+verify_jwt = false
+
+[functions.ollama-rag-chat]
+verify_jwt = false
+
+[functions.embed-documents]
+verify_jwt = false
