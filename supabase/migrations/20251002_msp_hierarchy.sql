@@ -92,40 +92,75 @@ DROP POLICY IF EXISTS "Allow all operations on assets" ON public.assets;
 DROP POLICY IF EXISTS "Allow all operations on logs" ON public.logs;
 
 -- New RLS policies for clients table
-CREATE POLICY "Super admins can manage all clients"
-ON public.clients FOR ALL
+
+-- SELECT: Super admins can view all, tenant admins can view their own
+CREATE POLICY "Super admins can view all clients"
+ON public.clients FOR SELECT
+TO authenticated
 USING (public.is_super_admin(auth.uid()));
 
 CREATE POLICY "Tenant admins can view their client"
 ON public.clients FOR SELECT
+TO authenticated
 USING (public.can_access_client(auth.uid(), id));
+
+-- INSERT: Only super admins can create new clients
+CREATE POLICY "Super admins can create clients"
+ON public.clients FOR INSERT
+TO authenticated
+WITH CHECK (public.is_super_admin(auth.uid()));
+
+-- UPDATE: Only super admins can update clients
+CREATE POLICY "Super admins can update clients"
+ON public.clients FOR UPDATE
+TO authenticated
+USING (public.is_super_admin(auth.uid()))
+WITH CHECK (public.is_super_admin(auth.uid()));
+
+-- DELETE: Only super admins can delete clients
+CREATE POLICY "Super admins can delete clients"
+ON public.clients FOR DELETE
+TO authenticated
+USING (public.is_super_admin(auth.uid()));
 
 -- New RLS policies for assets table
 CREATE POLICY "Super admins can manage all assets"
 ON public.assets FOR ALL
-USING (public.is_super_admin(auth.uid()));
+TO authenticated
+USING (public.is_super_admin(auth.uid()))
+WITH CHECK (public.is_super_admin(auth.uid()));
 
 CREATE POLICY "Users can manage assets for their client"
 ON public.assets FOR ALL
-USING (public.can_access_client(auth.uid(), client_id));
+TO authenticated
+USING (public.can_access_client(auth.uid(), client_id))
+WITH CHECK (public.can_access_client(auth.uid(), client_id));
 
--- New RLS policies for logs table  
+-- New RLS policies for logs table
 CREATE POLICY "Super admins can manage all logs"
 ON public.logs FOR ALL
-USING (public.is_super_admin(auth.uid()));
+TO authenticated
+USING (public.is_super_admin(auth.uid()))
+WITH CHECK (public.is_super_admin(auth.uid()));
 
 CREATE POLICY "Users can manage logs for their client"
 ON public.logs FOR ALL
-USING (public.can_access_client(auth.uid(), client_id));
+TO authenticated
+USING (public.can_access_client(auth.uid(), client_id))
+WITH CHECK (public.can_access_client(auth.uid(), client_id));
 
 -- New RLS policies for knowledge_base table
 CREATE POLICY "Super admins can manage all knowledge_base"
 ON public.knowledge_base FOR ALL
-USING (public.is_super_admin(auth.uid()));
+TO authenticated
+USING (public.is_super_admin(auth.uid()))
+WITH CHECK (public.is_super_admin(auth.uid()));
 
 CREATE POLICY "Users can manage knowledge_base for their client"
 ON public.knowledge_base FOR ALL
-USING (public.can_access_client(auth.uid(), client_id));
+TO authenticated
+USING (public.can_access_client(auth.uid(), client_id))
+WITH CHECK (public.can_access_client(auth.uid(), client_id));
 
 -- Update existing profiles policies to support tenant hierarchy
 DROP POLICY IF EXISTS "Super admins can view all profiles" ON public.profiles;
@@ -133,17 +168,25 @@ DROP POLICY IF EXISTS "Super admins can manage all profiles" ON public.profiles;
 
 CREATE POLICY "Super admins can manage all profiles"
 ON public.profiles FOR ALL
-USING (public.is_super_admin(auth.uid()));
+TO authenticated
+USING (public.is_super_admin(auth.uid()))
+WITH CHECK (public.is_super_admin(auth.uid()));
 
 CREATE POLICY "Tenant admins can manage profiles in their client"
 ON public.profiles FOR ALL
+TO authenticated
 USING (
-  public.is_tenant_admin(auth.uid(), client_id) AND 
+  public.is_tenant_admin(auth.uid(), client_id) AND
+  client_id = public.get_user_client_id(auth.uid())
+)
+WITH CHECK (
+  public.is_tenant_admin(auth.uid(), client_id) AND
   client_id = public.get_user_client_id(auth.uid())
 );
 
 CREATE POLICY "Users can view profiles in their client"
 ON public.profiles FOR SELECT
+TO authenticated
 USING (client_id = public.get_user_client_id(auth.uid()));
 
 -- Create function to generate secure credentials for new tenant admin
@@ -199,11 +242,18 @@ ALTER TABLE public.tenant_audit_log ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Super admins can view all audit logs"
 ON public.tenant_audit_log FOR SELECT
+TO authenticated
 USING (public.is_super_admin(auth.uid()));
 
 CREATE POLICY "Tenant admins can view their tenant audit logs"
 ON public.tenant_audit_log FOR SELECT
+TO authenticated
 USING (public.can_access_client(auth.uid(), tenant_id));
+
+CREATE POLICY "Super admins can insert audit logs"
+ON public.tenant_audit_log FOR INSERT
+TO authenticated
+WITH CHECK (public.is_super_admin(auth.uid()));
 
 -- Create index for better performance
 CREATE INDEX IF NOT EXISTS idx_profiles_client_id ON public.profiles(client_id);
